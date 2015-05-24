@@ -1,6 +1,7 @@
 #include<stdio.h>
-#include "declarations.h"//consist the necessary decalarations for the whole the quick sort demo to work
 #include "logic_quick_sort.c"
+void fill_array(int *fill_arr,int n);
+void output_array(int *output_arr,int n);
 int main(void)
 {
 	int n;

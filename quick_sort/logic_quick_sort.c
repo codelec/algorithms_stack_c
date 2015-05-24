@@ -1,3 +1,5 @@
+int select_partition(int *to_sort,int n);
+void quick_sort(int *to_sort,int n);
 int select_partition(int *to_sort,int n)
 {
 	int mid = (n % 2 == 0) ? (n / 2 - 1) : (n / 2);
