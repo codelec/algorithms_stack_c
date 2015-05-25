@@ -1,6 +1,6 @@
-int select_partition(int *to_sort,int n);
-void quick_sort(int *to_sort,int n);
-int select_partition(int *to_sort,int n)
+int select_partition(int *,int n);
+void quick_sort(int *,int n);
+int select_partition(int *,int n)
 {
 	int mid = (n % 2 == 0) ? (n / 2 - 1) : (n / 2);
 	if((to_sort[0] < to_sort[mid] && to_sort[mid] < to_sort[n - 1]) || (to_sort[0] > to_sort[mid] && to_sort[mid] > to_sort[n - 1]))
