@@ -16,11 +16,6 @@ void merge_sort(int *list, int n)
 		merge(list,n,first_half,second_half);
 	}
 }
-/*
-*divide_in_two
-*is passed by refrence the two arrays that were created in the function merge_sort
-*
-*/
 void divide_in_two(int *list,int list_size,int *first_half,int *second_half)
 {
 	int i ;
