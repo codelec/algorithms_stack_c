@@ -10,7 +10,7 @@ void bfs(vertex* s)
 	while(head != tail)
 	{	
 		traverse = head -> node -> connected_to;//taverse points to the list consisting of the nodes connected a particular node at present first in the list
-		while( traverse -> node != NULL)//traverse the connected_to
+		while( traverse != NULL)//traverse the connected_to
 		{
 			if ((traverse -> node -> explored) != 1)
 			{
