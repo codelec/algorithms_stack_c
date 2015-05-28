@@ -6,7 +6,6 @@ typedef struct
 {
 	short explored;
 	int id;
-	int level;
 	list *connected_to;
 }vertex;
 struct struct_list
@@ -14,7 +13,7 @@ struct struct_list
 	vertex *node;
 	list *next_connection;
 };
-#include "logic_bfs.c"
+#include "logic_dfs.c"
 int main(int argc, char const *argv[])
 {
 	int i = 0,a = 0,k = 0,b = 0,index = 0;
@@ -26,9 +25,8 @@ int main(int argc, char const *argv[])
 	char ch,line[20] = "";
 	FILE *fp = fopen("testfile","r+");//file to be opened with the pointer at the start of the file
 	list *next;
-	list *temp;
 	ch = fgetc(fp);//extracts character from file 
-	while(!feof(fp)) // feof returns true on end of file
+	while(!feof(fp)) // feof returns false on end of file
 	{
 		if (ch == '\n')//to start taking connections of another vertex 
 		{//initialize some of the variables since the next iteration of "while" will work on the next line of input
@@ -61,18 +59,16 @@ int main(int argc, char const *argv[])
 				next->node = &node[b];
 				(node[b]).id = b + 1;
 			}
-			char line[20]="";
+			char line[20] = "";
 			k++;//count of which number of the current line is being processed on
-			index=0;
+			index = 0;
 		}
-		ch=fgetc(fp);
+		ch = fgetc(fp);
 	}
-	bfs(&node[1]);//node from where the leveling is to be calculated
-	for ( i = 0; i < num_nodes; ++i)
+	dfs(&node[0]);
+	for (i = 0; i < num_nodes; ++i)
 	{
-		printf("%d -> %d\n",node[i].id,node[i].level);
+		printf(" %d\n",node[i].explored );
 	}
-	fclose(fp);
 	return 0;
-	printf("flag\n");
 }
