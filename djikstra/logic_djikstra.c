@@ -1,5 +1,5 @@
 //void print_nodes_in_list(list *head);
-void remove_node(list1 **head,vertex *toremove)
+void remove_node(list1 **head,list1 **tail,vertex *toremove)
 {
 	list1 *traverse,*prev_traverse;
 	while(((*head) != NULL) && ((*head)->node->id == toremove->id))
@@ -18,6 +18,10 @@ void remove_node(list1 **head,vertex *toremove)
 		if(((traverse->node)->id) == (toremove->id))
 		{
 			((prev_traverse)->next_connection) = (traverse->next_connection);
+			if (traverse->next_connection == NULL)
+			{
+				(*tail) = prev_traverse ;
+			}
 			free(traverse);
 			traverse = ((prev_traverse)->next_connection);
 			continue;//continues to the next iteration to prevent another unnecessary hop
@@ -32,15 +36,15 @@ vertex *find_min_weight_node(list1 *head,int *shortpath,int *num_nodes_explored)
 	vertex *min_weight_node;
 	while(traverse != NULL)//traverse the connected_to
 	{
-		if ((((traverse->parent)->explored) != ((traverse->node)->explored)) && (((traverse->weight) + shortpath[((traverse->parent)->id) - 1]) < min_weight))
+		if ((traverse->parent->explored != traverse->node->explored) && ((traverse->weight + shortpath[traverse->parent->id - 1]) < min_weight))
 		{
-			min_weight = (traverse->weight) + shortpath[((traverse->parent)->id) - 1];
+			min_weight = (traverse->weight) + shortpath[(traverse->parent->id) - 1];
 			min_weight_node = (traverse->node);
 		}
 		traverse = traverse->next_connection;
 	}
-	shortpath[(min_weight_node->id) - 1] = min_weight;
-	(min_weight_node->explored) = 1;
+	shortpath[min_weight_node->id - 1] = min_weight;
+	min_weight_node->explored = 1;
 	(*num_nodes_explored)++;
 	return min_weight_node;
 }
@@ -58,7 +62,6 @@ void dijkstra(vertex* s,int *shortpath)
 		traverse = min_weight_node->connected_to;//taverse the list consisting of the nodes connected a particular node at present first in the list
 		while((traverse != NULL) && (((traverse->node)->explored) != 1))//traverse the connected_to
 		{
-	printf(" in dijkstra\n");
 			if (flag == 0)
 			{
 				tail = (list1*)malloc(sizeof(list1));
@@ -76,8 +79,15 @@ void dijkstra(vertex* s,int *shortpath)
 			tail->next_connection = NULL;//tail=(tail->next_connection);//tail being set for the next addition to the queue
 			traverse = traverse->next_connection;
 		}
-		//print_nodes_in_list(head);
+		//print_nodes_in_list(head);//just for debugging purposes
 		min_weight_node = find_min_weight_node(head,shortpath,&num_nodes_explored);
-		remove_node(&head,min_weight_node);
+		/*
+		tail is being passed to make sure that tail 
+		is being updated and to make sure that it 
+		points to the last node in the list since 
+		if in case the last node is the one that 
+		is to be deleted from the list
+		*/
+		remove_node(&head,&tail,min_weight_node);
 	}
 }

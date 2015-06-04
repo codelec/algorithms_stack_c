@@ -67,17 +67,18 @@ void test_connection(vertex *node)
 		}
 		printf("\n");
 	}
-}
-void print_nodes_in_list(list *head)
+}*/
+/*void print_nodes_in_list(list1 *head)
 {
-	list *traverse=head;
-	while((traverse != NULL)
+	list1 *traverse=head;
+	while(traverse != NULL)
 	{
 		printf(" $%d",(traverse->node)->id);
 		traverse=traverse->next_connection;
 	}
 	printf("\n");
 }*/
+	
 void initialize(vertex *node,int *shortpath)
 {
 	int i;
