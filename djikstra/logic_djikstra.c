@@ -1,4 +1,4 @@
-//void print_nodes_in_list(list *head);
+#define MAX_WEIGHT 100
 void remove_node(list1 **head,list1 **tail,vertex *toremove)
 {
 	list1 *traverse,*prev_traverse;
@@ -9,10 +9,9 @@ void remove_node(list1 **head,list1 **tail,vertex *toremove)
 		free(traverse);
 	}
 	if (((*head) == NULL) || ((*head)->next_connection == NULL))
-		{return ;}
-	prev_traverse = (*head);//stores the addr of the contents being pointed by the current head which is now not the node of interest 
-	//prev_traverse is used to store the addr of the parent node(in terms of list)
-	traverse = (*head)->next_connection;//points to next node in list
+		{return ;}//no use to execute the following lines if the conditions above are true
+	prev_traverse = (*head);//the current head has already been checked in above while loop
+	traverse = (*head)->next_connection;
 	while(traverse != NULL)//to loop through the rest of the contents of the list to check whether it contains the node of interest or not
 	{
 		if(((traverse->node)->id) == (toremove->id))
@@ -31,15 +30,15 @@ void remove_node(list1 **head,list1 **tail,vertex *toremove)
 }
 vertex *find_min_weight_node(list1 *head,int *shortpath,int *num_nodes_explored)
 {
-	int min_weight = max_weight;//initializing it with maximum possbile weight stored in the macro
+	int min_weight = MAX_WEIGHT;//initializing it with maximum possbile weight stored in the macro
 	list1 *traverse = head;
 	vertex *min_weight_node;
 	while(traverse != NULL)//traverse the connected_to
 	{
 		if ((traverse->parent->explored != traverse->node->explored) && ((traverse->weight + shortpath[traverse->parent->id - 1]) < min_weight))
 		{
-			min_weight = (traverse->weight) + shortpath[(traverse->parent->id) - 1];
-			min_weight_node = (traverse->node);
+			min_weight = traverse->weight + shortpath[(traverse->parent->id) - 1];
+			min_weight_node = traverse->node;
 		}
 		traverse = traverse->next_connection;
 	}
@@ -57,7 +56,7 @@ void dijkstra(vertex* s,int *shortpath)
 	s->explored = 1;//to mark start as explored
 	num_nodes_explored++;//since one node is now explored
 	shortpath[(s->id) - 1] = 0;
-	while(num_nodes_explored < num_nodes)
+	while(num_nodes_explored < NUM_NODES)
 	{	
 		traverse = min_weight_node->connected_to;//taverse the list consisting of the nodes connected a particular node at present first in the list
 		while((traverse != NULL) && (((traverse->node)->explored) != 1))//traverse the connected_to
@@ -79,7 +78,6 @@ void dijkstra(vertex* s,int *shortpath)
 			tail->next_connection = NULL;//tail=(tail->next_connection);//tail being set for the next addition to the queue
 			traverse = traverse->next_connection;
 		}
-		//print_nodes_in_list(head);//just for debugging purposes
 		min_weight_node = find_min_weight_node(head,shortpath,&num_nodes_explored);
 		/*
 		tail is being passed to make sure that tail 

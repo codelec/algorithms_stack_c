@@ -1,14 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define num_nodes 4
-#define max_weight 100
+#define NUM_NODES 4
 typedef struct list list ;
 typedef struct 
-{
-	short explored;//in the below algorithm node is marked explored iff it has entry in the shortpath array 
+{//MORE feature associated with a node can be added here
+	short explored;//in the algorithm node is marked explored iff it has entry in the shortpath array 
 	int id;
 	list *connected_to;
 }vertex;
+/*the reason why list and list1 have been kept seperate is 
+*that list1 will used only when constructing the queue
+*used in djikstra in logic_djikstra
+*list is used to store the information regarding 
+*which nodes are connected to a specific node
+*/
 struct list
 {
 	int weight;
@@ -23,6 +28,7 @@ struct list1
 	vertex *node;
 	list1 *next_connection;
 };
+//see test12 to knwo how the input is structured
 void take_connection(vertex *node)
 {
 	int from,to,weight;
@@ -51,12 +57,12 @@ void take_connection(vertex *node)
 		traverse->next_connection = NULL;
 	}
 }
-/* the following lines are for debugging pruposes
-void test_connection(vertex *node)
+//the following two functions are for debugging pruposes
+/* void test_connection(vertex *node)
 {
 	int i;
 	list *traverse;
-	for (i = 0; i < num_nodes; ++i)
+	for (i = 0; i < NUM_NODES; ++i)
 	{
 		printf(" %d -> ",node[i].id );
 		traverse=node[i].connected_to;
@@ -78,11 +84,10 @@ void test_connection(vertex *node)
 	}
 	printf("\n");
 }*/
-	
 void initialize(vertex *node,int *shortpath)
 {
 	int i;
-	for (i = 0; i < num_nodes; i++)
+	for (i = 0; i < NUM_NODES; i++)
 	{
 		(node[i].id) = i + 1;
 		shortpath[i] = 0;
@@ -93,13 +98,13 @@ void initialize(vertex *node,int *shortpath)
 #include "logic_djikstra.c"
 int main()
 {
-	int i,shortpath[num_nodes];
-	vertex node[num_nodes];
+	int i,shortpath[NUM_NODES];
+	vertex node[NUM_NODES];
 	initialize(node,shortpath);
 	take_connection(node);
 	//test_connection(node);
 	dijkstra(&node[0],shortpath);
-	for (i = 0; i < num_nodes; ++i)
+	for (i = 0; i < NUM_NODES; ++i)
 	{
 		printf("%d -> %d\n",i + 1,shortpath[i]);
 	}
