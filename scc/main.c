@@ -1,8 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define num_nodes 875714
+#define num_nodes 875714//the number of nodes in the test
 typedef struct struct_list list ;
-typedef struct 
+typedef struct
 {
 	short explored;
 	int id;
@@ -21,7 +21,7 @@ void initialize();//initializes the nodes after a dfs loop call
 #include "logic_scc.h"
 int main(int argc, char const *argv[])
 {
-	initialize(); 
+	initialize();
 	take_connection(2);
 	dfs_loop(2);
 	initialize();
