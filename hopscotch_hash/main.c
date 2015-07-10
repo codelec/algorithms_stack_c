@@ -55,7 +55,7 @@ bool contains(uint32_t *check_key)
 }
 void find_near_free_distance(uint32_t *free_distance,BUCKET **free_bucket)
 {
-
+	
 }
 bool add(uint32_t *key,DATA *data)
 {
@@ -73,24 +73,34 @@ bool add(uint32_t *key,DATA *data)
 	segments_arr since it has crossed the ADDR_RANGE 
 	of the current row*/
 	uint32_t synergy = ADDR_RANGE - start_bucket_id - 1;
-	bool flag1 = 0 , flag2 = 0 , flag3 =1;
+	start_again:
+	/*
+	*flag1 - to prevent checking for free bucket go to the next unallocated row
+	*flag2 - to flag the movement from the end reached current row to the next row
+	to check for a free bucket
+	*flag3 - to signal a resize 
+	*/
+	bool flag1 = 0 , flag2 = 0 , flag3 = 1;
+	if (current_max_segment - 1 == segment)
+		flag1 = 1;
 	uint32_t mask = 1;
 	uint32_t free_distance = start_bucket_id;//start_bucket_id will be subtracted later on
 	for (;free_distance =< ADDR_RANGE - 1 + start_bucket_id;++free_distance,mask <<= 1)
 	{
-		if (!(mask & start_hop_info) && (segments_arr[segment][((flag)?(free_distance - synergy + 1):free_distance)].key == NULL)){
+		if (!(mask & start_hop_info) && (segments_arr[segment][((flag2)?(free_distance - synergy + 1):free_distance)].key == NULL)){
 			free_bucket = &[segment][((flag)?(free_distance - synergy + 1):free_distance)];
 			flag3 = 0;
 			break;
 		}
-		if (!flag && free_distance => synergy)
-		{
-			flag = 1;
+		if (!flag1 && free_distance => synergy){
+			flag2 = 1;
 			segment++;
 		}
 	}
-	/*if (flag == 1)
-		segment --;*/
+	if (flag3){
+		resize();//no free_distance found hence needs to be resized
+		goto start_again;
+	}
 	free_distance -= start_bucket_id;
 	if (free_distance < HOP_SIZE){
 		free_bucket->key = *key;
