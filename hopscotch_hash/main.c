@@ -53,9 +53,41 @@ bool contains(uint32_t *check_key)
 	}
 	return false;
 }
-void find_near_free_distance(uint32_t *free_distance,BUCKET **free_bucket)
+bool find_near_free_location(bool flag1,bool flag2,uint32_t segment,uint32_t *free_location,BUCKET **free_bucket)
 {
-	
+	uint32_t i,j,mask,current_bucket_hop_info;;
+	bool flag4 = 0;
+	BUCKET *current_bucket , *potential_free;
+	do{
+		for (i = *free_location - (HOP_SIZE - 1); i < *free_location; ++i)
+		{
+			if (flag1 && (i == (ADDR_RANGE - 1)))
+				return 0;
+			current_bucket = &segments_arr[segment][(((flag2)&&(i => ADDR_RANGE))?(i - ADDR_RANGE):i)];
+			current_bucket_hop_info = current_bucket->_hop_info;
+			mask = 1;
+			for (j = i; j < *free_location; ++j,mask <<= 1)
+			{
+				if (mask && current_bucket_hop_info)
+				{
+					potential_free = &segments_arr[segment][(j >= ADDR_RANGE)?(j - ADDR_RANGE):j];
+					(*free_bucket)->data = potential_free->data;
+					(*free_bucket)->key = potential_free->key;
+					potential_free->data = NULL;
+					potential_free->key = NULL;
+					current_bucket->_hop_info &= (!mask);
+					mask <<= (*free_location - j);
+					current_bucket->_hop_info |= mask;
+					flag4 = 1;
+					(*free_bucket) = potential_free;
+					*free_location = j;
+					break;
+				}
+			}
+			if (flag4)
+				break;
+		}
+	}while((*free_location - start_bucket_id) => HOP_SIZE);
 }
 bool add(uint32_t *key,DATA *data)
 {
@@ -84,37 +116,46 @@ bool add(uint32_t *key,DATA *data)
 	if (current_max_segment - 1 == segment)
 		flag1 = 1;
 	uint32_t mask = 1;
-	uint32_t free_distance = start_bucket_id;//start_bucket_id will be subtracted later on
-	for (;free_distance =< ADDR_RANGE - 1 + start_bucket_id;++free_distance,mask <<= 1)
+	/*free location will be calculated wrt to the start of the 
+	*segment row
+	*/
+	uint32_t free_location = start_bucket_id;//start_bucket_id will be subtracted later on
+	for (;free_location =< ADDR_RANGE - 1 + start_bucket_id;++free_location,mask <<= 1)
 	{
-		if (!(mask & start_hop_info) && (segments_arr[segment][((flag2)?(free_distance - synergy + 1):free_distance)].key == NULL)){
-			free_bucket = &[segment][((flag)?(free_distance - synergy + 1):free_distance)];
+		if (!(mask & start_hop_info) && (segments_arr[segment][((flag2)?(free_location - synergy + 1):free_location)].key == NULL)){
+			free_bucket = &segments_arr[segment][((flag2)?(free_location - synergy + 1):free_location)];
 			flag3 = 0;
 			break;
 		}
-		if (!flag1 && free_distance => synergy){
+		if (!flag1 && free_location => synergy){
 			flag2 = 1;
 			segment++;
 		}
 	}
 	if (flag3){
-		resize();//no free_distance found hence needs to be resized
+		resize();//no free_location found hence needs to be resized
 		goto start_again;
 	}
-	free_distance -= start_bucket_id;
-	if (free_distance < HOP_SIZE){
+	if ((free_location - start_bucket_id) < HOP_SIZE){
 		free_bucket->key = *key;
 		free_bucket->data = *data;
-		mask = (1 << free_distance);
+		mask = (1 << (free_location - start_bucket_id));
 		(start_bucket_id->_hop_info) &= mask ; 
 	}
 	else{
-		do{
-			find_near_free_distance(&free_distance,&free_bucket);
-		}while(free_distance => HOP_SIZE);
+		if (!find_near_free_location(flag2,start_bucket_id,segment,&free_location,&free_bucket))
+		{
+			resize();
+			goto start_again:
+		}
 		free_bucket->key = *key;
 		free_bucket->data = *data;
-		mask = (1 << free_distance);
+		mask = (1 << (free_location - start_bucket_id));
 		(start_bucket_id->_hop_info) &= mask ;
 	}
+}
+int main(int argc, char const *argv[])
+{
+	
+	return 0;
 }
