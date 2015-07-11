@@ -36,7 +36,7 @@ bool contains(uint32_t *check_key)
 	uint32_t start_hop_info = segments_arr[segment][start_bucket_id]->_hop_info;
 	uint32_t synergy = ADDR_RANGE - start_bucket_id - 1;
 	bool flag1 = 0,flag2 = 0;
-	if (current_max_segment - 1 == segment)
+	if (current_max_segment == segment)
 		flag1 = 1;
 	uint32_t mask = 1, count = 0;
 	for (;count =< (HOP_SIZE - 1); count++ , mask <<= 1)
@@ -154,8 +154,37 @@ bool add(uint32_t *key,DATA *data)
 		(start_bucket_id->_hop_info) &= mask ;
 	}
 }
+void remove(uint32_t *key,DATA *data)
+{
+	uint32_t hash = hash_calc(*key);
+	uint32_t segment = hash & segment_mask ;
+	uint32_t start_bucket_id = hash & bucket_mask ;
+	BUCKET *found_bucket;
+	uint32_t i = 0;
+	uint32_t start_hop_info = segments_arr[segment][start_bucket_id]._hop_info;
+	for (;i < HOP_SIZE; ++i)
+	{
+		if ((mask & start_hop_info) && 
+			(segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ? 
+				((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)].key == key))
+		{
+			found_bucket = &segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ? ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)];
+			found_bucket -> key = NULL;
+			found_bucket -> data = NULL;
+		}
+	}
+}
+void resize()
+{
+	uint32_t i;
+	for (i = 0; i < ADDR_RANGE; ++i)
+	{
+		segments_arr[current_max_segment + 1][i].key = NULL;
+		segments_arr[current_max_segment + 1][i].data = NULL;
+		segments_arr[current_max_segment + 1][i]._hop_info = 0;
+	}
+}
 int main(int argc, char const *argv[])
 {
-	
 	return 0;
 }
