@@ -1,6 +1,6 @@
 /*
 *credits to the following paper for providing a good insight into hopscotch hashing
-people.csail.mit.edu/shanir/publications/disc2008_submission_98.pdf
+*people.csail.mit.edu/shanir/publications/disc2008_submission_98.pdf
 */
 bool _contains(uint32_t *check_key)
 {
@@ -148,13 +148,33 @@ void _remove(uint32_t *key,DATA *data)
 		}
 	}
 }
+//confused in the following function
 void resize()
 {
-	uint32_t i;
-	for (i = 0; i < ADDR_RANGE; ++i)
+	uint32_t i,j;
+	for (i = current_max_segment + 1; i < 2*(current_max_segment + 1); ++i)	{
+		for (j = 0; j < ADDR_RANGE; ++j)
+		{
+			segments_arr[i][j].key = -1;
+			segments_arr[i][j].data.data = -1;
+			segments_arr[i][j]._hop_info = 0;
+		}
+	}
+	current_max_segment = 2*current_max_segment + 1;
+	if (segment_mask != 0)
+		segment_mask <<= 1;
+	else
+		segment_mask = 0b0100000000;
+	for (i = 0; i <= current_max_segment; ++i)
 	{
-		segments_arr[current_max_segment + 1][i].key = -1;
-		segments_arr[current_max_segment + 1][i].data.data = -1;
-		segments_arr[current_max_segment + 1][i]._hop_info = 0;
+		for (j = 0;j < ADDR_RANGE; ++j)
+		{
+			if ((hashlittle(&segments_arr[i][j].key,sizeof(segments_arr[i][j].key),0) & segment_mask) != i){
+				_add(&segments_arr[i][j].key,&segments_arr[i][j].data);
+				segments_arr[i][j].key = -1;
+				segments_arr[i][j].data.data = -1;
+				segments_arr
+			}
+		}
 	}
 }
