@@ -4,6 +4,9 @@
 #include "hopscotch.h"
 int main(int argc, char const *argv[])
 {
-	printf("%u\n",hashlittle("keyy",sizeof("key"),1));
+	char a[]="keyy";
+	printf("%u\n",hashlittle(a,sizeof(a)/sizeof(a[0]),1));
+	printf("%s\n",a);
+	printf("%u\n", ~(0b10) + 1);
 	return 0;
 }
