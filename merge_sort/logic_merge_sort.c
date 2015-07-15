@@ -1,14 +1,11 @@
 void merge(int *,int ,int *,int *);
-void merge_sort(int *,int );
 void divide_in_two(int *,int ,int *,int *);
-void output_sort(int *, int );
 void merge_sort(int *list, int n)
 {
 	if(n == 1)
 	{	return ;}
 	else
 	{
-		output_sort(list,n);
 		int first_half[(n / 2)],second_half[(n % 2 != 0 ? (n / 2) + 1 : (n / 2))];
 		divide_in_two(list,n,first_half,second_half);
 		merge_sort(first_half,(n / 2));
@@ -31,6 +28,10 @@ void divide_in_two(int *list,int list_size,int *first_half,int *second_half)
 		}
 	}
 }
+/*
+*compare the first element of each half's and accordingly the lower one of the two should
+*be put in the "list" and this should be done untill all the elements end up in list
+*/
 void merge(int *list,int list_size,int *first_half,int *second_half)
 {
 	int k = 0,a = list_size / 2 , b = (list_size % 2 != 0 ? (list_size / 2) + 1 : (list_size / 2)) , i = 0 , j = 0 ;
@@ -55,5 +56,4 @@ void merge(int *list,int list_size,int *first_half,int *second_half)
 	{
 		list[k] = first_half[i];
 	}
-	output_sort(list,a + b);
 }

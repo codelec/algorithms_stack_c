@@ -3,7 +3,10 @@
 *people.csail.mit.edu/shanir/publications/disc2008_submission_98.pdf
 */
 /*
-*
+*add's the element to a bucket whose location is less that HOP_SIZE
+*from the hashed bucket it uses
+find_near_free_location() to move a free bucket in the range of the HOP_SIZE away 
+from the hashed bucket
 */
 bool _add(uint32_t *key,DATA *data)
 {
@@ -29,7 +32,7 @@ bool _add(uint32_t *key,DATA *data)
 	*flag3 - to signal a resize 
 	*/
 	flag1 = 0 , flag2 = 0 , flag3 = 1;
-	if (current_max_segment - 1 == segment)
+	if (current_max_segment == segment)
 		flag1 = 1;
 	/*
 	*free_distance is calculated wrt the start_bucket_id
@@ -83,11 +86,12 @@ bool _add(uint32_t *key,DATA *data)
 		free_bucket->key = *key;
 		free_bucket->data = *data;
 		mask = (1 << free_distance);
-		start_bucket->_hop_info &= mask ; 
+		start_bucket->_hop_info ^= mask ; 
 	}
 	else{
 		if(flag2)
 			segment--;// too make sure that it starts from its original row
+		uint32_t free_location = start_bucket_id + free_location ; 
 		if (!find_near_free_location(flag1,flag2,segment,start_bucket_id,
 			&free_location,&free_bucket))
 		{
@@ -100,15 +104,11 @@ bool _add(uint32_t *key,DATA *data)
 		(start_bucket->_hop_info) &= mask ;
 	}
 }
-/*
-*
-*/
 bool find_near_free_location(bool flag1,bool flag2,
 	uint32_t segment,uint32_t start_bucket_id,
 	uint32_t *free_location,BUCKET **free_bucket)
 {
 	uint32_t i,j,mask,current_bucket_hop_info;
-	bool flag4 = 0;
 	BUCKET *current_bucket , *potential_free;
 	do{
 		for (i = *free_location - (HOP_SIZE - 1); i < *free_location; ++i)
@@ -130,16 +130,14 @@ bool find_near_free_location(bool flag1,bool flag2,
 					current_bucket->_hop_info &= (!mask);
 					mask <<= (*free_location - j);
 					current_bucket->_hop_info |= mask;
-					flag4 = 1;
 					(*free_bucket) = potential_free;
 					*free_location = j;
-					break;
+					return true;
 				}
 			}
-			if (flag4)
-				break;
 		}
 	}while((*free_location - start_bucket_id) >= HOP_SIZE);
+	return false;
 }
 /*
 */
@@ -170,7 +168,7 @@ bool _contains(uint32_t *check_key)
 }
 /*
 */
-void _remove(uint32_t *key,DATA *data)
+bool _remove(uint32_t *key)
 {
 	uint32_t hash = hashlittle(key,sizeof(*key),0);
 	uint32_t segment = hash & segment_mask ;
@@ -181,14 +179,18 @@ void _remove(uint32_t *key,DATA *data)
 	for (;i < HOP_SIZE; ++i,mask <<= 1)
 	{
 		if ((mask & start_hop_info) && 
-			(segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ? ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)].key == *key))
+			(segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ?
+			 ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)].key == *key))
 		{
-			found_bucket = &segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ? ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)];
+			found_bucket = &segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ?
+			 ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)];
 			found_bucket -> key = -1;
 			found_bucket -> data.data = -1;
-			found_bucket ->_hop_info &= (~(0b10) + 1);//clear the element also from the _hop_info	
+			found_bucket ->_hop_info &= (~(0b10) + 1);//clear the element also from the _hop_info
+			return true;	
 		}
 	}
+	return false;
 }
 /*
 */
@@ -219,7 +221,7 @@ void resize()
 				_add(&(segments_arr[i][j].key),&(segments_arr[i][j].data));
 				segments_arr[i][j].key = -1;
 				segments_arr[i][j].data.data = -1;
-				segments_arr[i][j]._hop_info &= (~(0b10) + 1);
+				segments_arr[i][j]._hop_info &= (~(0b10) + 1);//to remove 1 in the least significant bit
 			}
 		}
 	}

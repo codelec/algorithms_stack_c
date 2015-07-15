@@ -30,13 +30,12 @@ BUCKET segments_arr[][ADDR_RANGE];//declared global at present will be taken car
 /*current_max_segment is to make sure that
 *segment should not be incremented
 */
-uint32_t current_max_segment;//start from zero
+uint32_t current_max_segment = 0;//start from zero row0 is the maximum default
 uint32_t segment_mask ;
 uint32_t bucket_mask = 0b011111111;
-bool _contains(uint32_t *check_key);
+bool _contains(uint32_t *);
 void resize();
-void _remove(uint32_t *key,DATA *data);
-bool _add(uint32_t *key,DATA *data);
-bool find_near_free_location(bool flag1,bool flag2,uint32_t segment,uint32_t start_bucket_id,uint32_t *free_location,BUCKET **free_bucket);
-bool _contains(uint32_t *check_key);
+bool _remove(uint32_t *);
+bool _add(uint32_t *,DATA *);
+bool find_near_free_location(bool ,bool ,uint32_t ,uint32_t ,uint32_t *,BUCKET **);
 #include "hopscotch.c"
