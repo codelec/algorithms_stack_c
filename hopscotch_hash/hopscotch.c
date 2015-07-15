@@ -186,7 +186,7 @@ bool _remove(uint32_t *key)
 			 ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)];
 			found_bucket -> key = -1;
 			found_bucket -> data.data = -1;
-			found_bucket ->_hop_info &= (~(0b10) + 1);//clear the element also from the _hop_info
+			start_hop_info &= (~mask);//clear the element also from the _hop_info
 			return true;	
 		}
 	}
