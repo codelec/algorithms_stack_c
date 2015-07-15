@@ -86,7 +86,7 @@ bool _add(uint32_t *key,DATA *data)
 		free_bucket->key = *key;
 		free_bucket->data = *data;
 		mask = (1 << free_distance);
-		start_bucket->_hop_info ^= mask ; 
+		start_bucket->_hop_info |= mask ; 
 	}
 	else{
 		if(flag2)
@@ -101,7 +101,7 @@ bool _add(uint32_t *key,DATA *data)
 		free_bucket->key = *key;
 		free_bucket->data = *data;
 		mask = (1 << (free_location - start_bucket_id));
-		(start_bucket->_hop_info) &= mask ;
+		(start_bucket->_hop_info) |= mask ;
 	}
 }
 bool find_near_free_location(bool flag1,bool flag2,
