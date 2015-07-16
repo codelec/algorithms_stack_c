@@ -12,6 +12,22 @@ void intialize()
 		segments_arr[0][i]._hop_info = 0;
 	}
 }
+void test()
+{
+	uint32_t i,j;
+	for(i=0;i <= current_max_segment;i++)
+	{
+		for (j = 0; j < ADDR_RANGE; j++)
+		{
+			if (segments_arr[i][j].key != -1)
+				printf("%d\t",bucket_mask & hashlittle(&(segments_arr[i][j].key),sizeof(segments_arr[i][j].key),0));
+			else
+				printf("-\t");
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
 int main(int argc, char const *argv[])
 {
 	char ch;
@@ -33,13 +49,13 @@ int main(int argc, char const *argv[])
 					printf(" not there\n");
 				break;
 			case 'i':
-				scanf(" %d %d",&key,&(data1.data));
-				printf("add\n" );
+				scanf("%d %d",&key,&(data1.data));
 				flag = _add(&key,&data1);
-				if (flag)
+				/*if (flag)
 					printf(" added\n");
 				else
-					printf(" not added\n");
+					printf(" not added\n");*/
+				test();
 				break;
 			case 'l':
 				scanf(" %d",&key);
