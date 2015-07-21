@@ -17,6 +17,7 @@ void test()
 	uint32_t i,j;
 	for(i=0;i <= current_max_segment;i++)
 	{
+		printf("\n %d\t",i);
 		for (j = 0; j < ADDR_RANGE; j++)
 		{
 			if (segments_arr[i][j].key != -1)
@@ -26,7 +27,6 @@ void test()
 		}
 		printf("\n");
 	}
-	printf("\n");
 }
 int main(int argc, char const *argv[])
 {
@@ -51,10 +51,10 @@ int main(int argc, char const *argv[])
 			case 'i':
 				scanf("%d %d",&key,&(data1.data));
 				flag = _add(&key,&data1);
-				/*if (flag)
+				if (flag)
 					printf(" added\n");
 				else
-					printf(" not added\n");*/
+					printf(" not added\n");
 				test();
 				break;
 			case 'l':

@@ -1,28 +1,8 @@
-#include<stdio.h>
-void fill_array(long* sort,long n);
 long count_and_merge_sort(long* sort,long n);
 long merge_and_count_split_inv(long* one_half,long* two_half,long n);
-int
-main(void)
-{
-	long n;
-	printf(" enter the number of elements to be entered : ");
-	scanf("%ld",&n);
-	long sort[n];
-	fill_array(sort, n);
-	printf(" the number of inversions : %ld\n",count_and_merge_sort(sort,n));
-	return (0);
-}
-void
-fill_array(long* sort,long n)
-{
-	long i;
-	for(i=0;i<n;i++)
-		scanf("%ld",(sort+i));
-}
 long count_and_merge_sort(long* sort,long n)
 {
-	if (n==1)
+	if (n==1)//base case
 		return 0;
 	else
 	{
@@ -51,6 +31,8 @@ long merge_and_count_split_inv(long* one_half,long* two_half,long n)
 			j++,k++;
 		}
 	}
+	//following to move the elements left when one of the array's
+	//all elements have been incorporated
 	if (i<a)
 	{
 		while(i<a&&k<n)
@@ -67,6 +49,8 @@ long merge_and_count_split_inv(long* one_half,long* two_half,long n)
 			j++,k++;
 		}
 	}
+	//to update the original array so that the updated array can be used in the function
+	//where this array returns
 	for(i=0;i<n;i++)
 	{
 		if(i<a)

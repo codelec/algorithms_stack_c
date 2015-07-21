@@ -1,14 +1,21 @@
 int select_partition(int *,int n);
 void quick_sort(int *,int n);
+/*
+*select_partition() is just for the purpose of selecting a good pivot 
+*such that is close to being median since then the number of recursive calls 
+sorting the whole array can be reduced . 
+*/
 int select_partition(int *,int n)
 {
 	int mid = (n % 2 == 0) ? (n / 2 - 1) : (n / 2);
-	if((to_sort[0] < to_sort[mid] && to_sort[mid] < to_sort[n - 1]) || (to_sort[0] > to_sort[mid] && to_sort[mid] > to_sort[n - 1]))
-	{return (mid);}
-	else if((to_sort[0] < to_sort[n - 1] && to_sort[mid] > to_sort[n - 1]) || (to_sort[0] > to_sort[n - 1] && to_sort[mid] < to_sort[n - 1]))
-	{return (n - 1);}
+	if((to_sort[0] < to_sort[mid] && to_sort[mid] < to_sort[n - 1]) ||
+		 (to_sort[0] > to_sort[mid] && to_sort[mid] > to_sort[n - 1]))
+		return (mid);
+	else if((to_sort[0] < to_sort[n - 1] && to_sort[mid] > to_sort[n - 1]) ||
+			 (to_sort[0] > to_sort[n - 1] && to_sort[mid] < to_sort[n - 1]))
+		return (n - 1);
 	else
-	{return (0);}
+		return (0);
 }
 void quick_sort(int *to_sort,int n)
 {
