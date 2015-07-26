@@ -224,12 +224,13 @@ bool _contains(uint32_t *check_key)
 */
 bool _remove(uint32_t *key)
 {
+	uint8_t flag4 = 0;
 	uint32_t hash , segment , start_bucket_id , i , mask ;
 	uint32_t *start_hop_info;
 	/*flag2 - to allow segment to increment only once
 	flag4 - so that hash_init_val can be decremented after it is
 	*/
-	bool flag1 , flag2 , flag4 = 0;
+	bool flag1 , flag2 ;
 	BUCKET *found_bucket;
 	check_again:
 	i = 0 , mask = 1 , flag2 = 0 , flag1 = 0; 
@@ -262,9 +263,9 @@ bool _remove(uint32_t *key)
 			segment++;
 		}
 	}
-	if ((start_bucket_id + 1) == ADDR_RANGE)
+	if ((flag4 < 1) && ((start_bucket_id + 1) == ADDR_RANGE))
 	{
-		flag4 = 1;
+		flag4 ++;
 		hash_init_val++;
 		goto check_again;
 	}

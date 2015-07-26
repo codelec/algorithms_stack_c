@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+void test();
 #include "lookup.c"
 #include "hopscotch.h"
 void intialize()
@@ -17,55 +19,62 @@ void test()
 	uint32_t i,j;
 	for(i=0;i <= current_max_segment;i++)
 	{
-		printf("\n %d\t",i);
+		printf("\n %u- \t",i);
 		for (j = 0; j < ADDR_RANGE; j++)
 		{
 			if (segments_arr[i][j].key != -1)
-				printf("%d\t",bucket_mask & hashlittle(&(segments_arr[i][j].key),sizeof(segments_arr[i][j].key),0));
+				printf("%u\t",bucket_mask & hashlittle(&(segments_arr[i][j].key),sizeof(segments_arr[i][j].key),hash_init_val));
 			else
 				printf("-\t");
 		}
-		printf("\n");
 	}
+	printf("\n");
 }
 int main(int argc, char const *argv[])
 {
+	clock_t begin,end,during;
+	begin = clock();
 	char ch;
 	uint32_t key;
 	DATA data1;
-	bool flag = 0;
 	intialize();
 	do
 	{
 		ch = getchar();
 		switch(ch)
 		{
-			case 'd':
-				scanf(" %d",&key);
-				flag = _remove(&key);
-				if (flag)
-					printf(" removed\n");
+			case 'l':
+				scanf(" %u",&key);
+				if (_contains(&key))
+					printf("\n present");
 				else
-					printf(" not there\n");
+					printf("\n not there %u",key);
 				break;
 			case 'i':
-				scanf("%d %d",&key,&(data1.data));
-				flag = _add(&key,&data1);
-				if (flag)
-					printf(" added\n");
+				scanf("%u %u",&key,&(data1.data));
+				if (_add(&key,&data1))
+					printf("\n added");
 				else
-					printf(" not added\n");
-				test();
+					printf("\n not added");
+				//test();
 				break;
-			case 'l':
-				scanf(" %d",&key);
-				flag = _contains(&key);
-				if (flag)
-					printf(" present\n");
+			case 'd':
+				scanf(" %u",&key);
+				if (_remove(&key))
+					printf("\n removed");
 				else
-					printf(" not there\n");
+					printf("\n not there %u",key);
+				break;
+			case 't':
+				during = clock();
+				printf("\ntime in ms %u",((during - begin)*1000)/CLOCKS_PER_SEC);
+				break;
+			case 'f':
+				printf("\nload-factor %lf",(1024.0*128.0)/((current_max_segment + 1.0)*1024.0));
 				break;
 		}
 	}while(ch != 'q');
+	end = clock();
+	printf("time in ms %u %u\n",((end - begin)*1000)/CLOCKS_PER_SEC,begin);
 	return 0;
 }
