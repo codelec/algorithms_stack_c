@@ -2,9 +2,9 @@
 *credits to the following paper for providing a good insight into hopscotch hashing
 people.csail.mit.edu/shanir/publications/disc2008_submission_98.pdf
 */
-#define HOP_SIZE 4
-#define ADDR_RANGE 16
-#define BUCKET_MASK_BITS 4
+#define HOP_SIZE 32
+#define ADDR_RANGE 1024
+#define BUCKET_MASK_BITS 10
 /*changing this should also change bucket_mask initialization in 
 this file itself and also in hopscotch.c file in resize() initialization
 of segment_mask should be accordingly changed */
@@ -38,8 +38,8 @@ uint32_t segment_mask = 0;
 *results in Segmentation default core dumped which has 
 *avoided that error
 */
-uint32_t hash_init_val = 2; 
-uint32_t bucket_mask = 0b01111;
+uint32_t hash_init_val = 2; //changing this will change the hash generated
+uint32_t bucket_mask = 0b01111111111;
 bool _contains(uint32_t *);
 void resize();
 bool _remove(uint32_t *);

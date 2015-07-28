@@ -1,0 +1,26 @@
+please make the changes in the following in hopscotch.h depending on the amount of data 
+that is to added in the hash table
+	1)HOP_SIZE
+	2)ADDR_RANGE
+	3)BUCKET_MASK_BITS
+	4)bucket_mask
+	5)segments_arr["this value to be upper bound since resize is invoked automatically"][ADDR_RANGE]
+
+credits to Melissa O'Neill for making the pcg_basic.c file available online 
+which is the file that contains the declaration and definition of data type 
+pcg32_random_t and function pcg32_boundedrand_r(pcg_random_t *,uint32_t upperbound)
+and pcg32_srandom_r() used in main1.c to generate the test files
+
+to run the test 
+gcc main1.c pcg_basic.c
+	main1.c - contains the code used to generate the test cases 
+	pcg_basic.c - generates random numbers which is used by main1.c
+./a.out > ./test3/testfile
+	stores the test case in file ./test3/testfile
+gcc main.c
+	this contains the intial code that drives the hopscotch.c
+	by providing it with required input
+./a.out < ./test3/testfile > ./test3/testresult
+	./test3/testresult is used since on testing the program with large 
+	amounts of data for every operation the result is printed so storing 
+	in the file prevents flooding the terminal
