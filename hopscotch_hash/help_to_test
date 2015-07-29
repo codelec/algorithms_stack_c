@@ -1,3 +1,17 @@
+the following is the format of input 
+i 
+23 34
+l 
+23
+d
+23
+in the above example 
+"i" - the following two integers are the key and data respectively
+23 - key
+34 - data
+"l" - the following integer is key that is to be checked for lookup
+"d" - the following integer is key that is to be deleted
+
 please make the changes in the following in hopscotch.h depending on the amount of data 
 that is to added in the hash table
 	1)HOP_SIZE

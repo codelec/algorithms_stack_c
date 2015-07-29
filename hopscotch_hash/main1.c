@@ -27,5 +27,5 @@ int main()
 		printf("d\n");
 		printf(" %u\n",arr[pcg32_boundedrand_r(&rng, 1024*128 - 1)]);	
 	}
-	printf("t\n");
+	printf("t\nq");
 }

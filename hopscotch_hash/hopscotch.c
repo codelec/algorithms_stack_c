@@ -45,12 +45,10 @@ bool _add(uint32_t *key,DATA *data)
 	*free_distance is calculated wrt the start_bucket_id
 	*following lines 
 	*/
-	for (;free_distance < HOP_SIZE ;++free_distance,mask <<= 1)
-	{
+	for (;free_distance < HOP_SIZE ;++free_distance,mask <<= 1){
 		if ((!(mask & (*start_hop_info))) && 
 			(segments_arr[segment][(flag2?(free_distance - synergy - 1)
-				:(free_distance + start_bucket_id))].key == -1))
-		{
+				:(free_distance + start_bucket_id))].key == -1)){
 			free_bucket = &segments_arr[segment][((flag2)?(free_distance - synergy - 1)
 				:(free_distance + start_bucket_id))];
 			flag3 = 0;
@@ -76,8 +74,10 @@ bool _add(uint32_t *key,DATA *data)
 	*less condition to evaluate 
 	*/
 	for (i = free_distance; flag3 && i < ADDR_RANGE; ++i){
-		if (segments_arr[segment][(flag2?(i - synergy - 1):(i + start_bucket_id))].key == -1){
-			free_bucket = &segments_arr[segment][((flag2)?(i - synergy - 1):(i + start_bucket_id))];
+		if (segments_arr[segment][(flag2?(i - synergy - 1):
+				(i + start_bucket_id))].key == -1){
+			free_bucket = &segments_arr[segment][((flag2)?
+				(i - synergy - 1):(i + start_bucket_id))];
 			flag3 = 0;//to indicate no need for resize
 			free_distance = i;
 			break;
@@ -94,7 +94,7 @@ bool _add(uint32_t *key,DATA *data)
 	if (flag3 && flag1 && (!flag4) && ((start_bucket_id + 1) == ADDR_RANGE)){
 		flag4 = 1;
 		hash_init_val++;
-		goto start_again;	
+		goto start_again;
 	}
 	if (flag3){
 		resize();//no free_location found hence needs to be resized
@@ -111,11 +111,8 @@ bool _add(uint32_t *key,DATA *data)
 			segment--;// too make sure that it starts from its original row
 		uint32_t free_location = start_bucket_id + free_distance ;
 		if (!find_near_free_location(flag1,segment,start_bucket_id,
-			&free_location,&free_bucket))
-		{
-			//test();
+			&free_location,&free_bucket)){
 			resize();
-			//test();
 			goto start_again;
 		}
 		free_bucket->key = *key;
@@ -133,27 +130,24 @@ bool find_near_free_location(bool flag1,
 	*means there is no element available to swap the free position with
 	*/
 	uint32_t i,j,mask,current_bucket_hop_info,temp;
-	bool flag3;
+	bool flag3;//flag3 used to exit the outer loop also since break only exits one
 	BUCKET *current_bucket , *potential_free;
 	do{
 		/*to stop iterating if no change in the *free_location
 		 signifying no more free location can be made available*/
 		temp = (*free_location);
 		flag3 = 0;
-		for (i = *free_location - (HOP_SIZE - 1); i < *free_location; ++i)
-		{
+		for (i = *free_location - (HOP_SIZE - 1); i < *free_location; ++i){
 			if (flag1 && (i == (ADDR_RANGE - 1)))
 				return 0;
 			current_bucket = &segments_arr[((i >= ADDR_RANGE)?(segment + 1):segment)]
 							[((i >= ADDR_RANGE)?(i - ADDR_RANGE):i)];
 			current_bucket_hop_info = current_bucket->_hop_info;
 			mask = 1;
-			for (j = i; j < *free_location; ++j,mask <<= 1)
-			{
+			for (j = i; j < *free_location; ++j,mask <<= 1){
 				potential_free = &segments_arr[((j >= ADDR_RANGE)?(segment + 1):segment)]
 					[((j >= ADDR_RANGE)?(j - ADDR_RANGE):j)];
-				if ((mask & current_bucket_hop_info) && (potential_free->key != -1))
-				{
+				if ((mask & current_bucket_hop_info) && (potential_free->key != -1)){
 					(*free_bucket)->data = potential_free->data;
 					(*free_bucket)->key = potential_free->key;
 					potential_free->data.data = -1;
@@ -194,16 +188,14 @@ bool _contains(uint32_t *check_key)
 		flag1 = 1;
 	start_hop_info = &segments_arr[segment][start_bucket_id]._hop_info;
 	synergy = ADDR_RANGE - start_bucket_id - 1;
-	for (;count <= (HOP_SIZE - 1); count++ , mask <<= 1)
-	{
+	for (;count <= (HOP_SIZE - 1); count++ , mask <<= 1){
 		if ((mask & (*start_hop_info)) && (segments_arr[segment][flag2?(start_bucket_id + count - ADDR_RANGE)
 			:(start_bucket_id + count)].key == (*check_key))){
 			return true;
 		}
 		if (flag1 && ((count + start_bucket_id + 1) == ADDR_RANGE))
 			break;//since the next row is not yet allocated neither initialized
-		if (!flag1 && !flag2 && count == synergy)
-		{
+		if (!flag1 && !flag2 && count == synergy){
 			flag2 = 1;
 			segment++;
 		}
@@ -242,12 +234,10 @@ bool _remove(uint32_t *key)
 	if (segment == current_max_segment)
 		flag1 = 1;
 	start_hop_info = &(segments_arr[segment][start_bucket_id]._hop_info);
-	for (;i < HOP_SIZE; ++i,mask <<= 1)
-	{
+	for (;i < HOP_SIZE; ++i,mask <<= 1){
 		if ((mask & (*start_hop_info)) && 
 			(segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ?
-			 (start_bucket_id + i - ADDR_RANGE) : (start_bucket_id + i)].key == *key))
-		{
+			 (start_bucket_id + i - ADDR_RANGE) : (start_bucket_id + i)].key == *key)){
 			found_bucket = &segments_arr[segment][((start_bucket_id + i) >= ADDR_RANGE) ?
 			 ((start_bucket_id + i) - ADDR_RANGE) : (start_bucket_id + i)];
 			found_bucket -> key = -1;
@@ -257,15 +247,13 @@ bool _remove(uint32_t *key)
 		}
 		if (flag1 && ((i + start_bucket_id + 1) == ADDR_RANGE))
 			break;//since the next row is not yet allocated neither initialized
-		if (!flag1 && !flag2 && ((i + start_bucket_id + 1) == ADDR_RANGE))
-		{
+		if (!flag1 && !flag2 && ((i + start_bucket_id + 1) == ADDR_RANGE)){
 			flag2 = 1;
 			segment++;
 		}
 	}
-	if ((flag4 < 1) && ((start_bucket_id + 1) == ADDR_RANGE))
-	{
-		flag4 ++;
+	if ((flag4 < 1) && ((start_bucket_id + 1) == ADDR_RANGE)){
+		flag4++;
 		hash_init_val++;
 		goto check_again;
 	}
@@ -277,9 +265,9 @@ void resize()
 {
 	uint32_t i,j,key,segment;
 	DATA temp;
-	for (i = current_max_segment + 1; i <= (2*current_max_segment + 1); ++i)	{
-		for (j = 0; j < ADDR_RANGE; ++j)
-		{
+	//initialize the non-initialized buckets
+	for (i = current_max_segment + 1; i <= (2*current_max_segment + 1); ++i){
+		for (j = 0; j < ADDR_RANGE; ++j){
 			segments_arr[i][j].key = -1;
 			segments_arr[i][j].data.data = -1;
 			segments_arr[i][j]._hop_info = 0;
@@ -291,10 +279,8 @@ void resize()
 	else
 		segment_mask = 1<<BUCKET_MASK_BITS;
 	uint32_t allocated_bucket_id , hash ;
-	for (i = 0; i <= current_max_segment; ++i)
-	{
-		for (j = 0;j < ADDR_RANGE; ++j)
-		{
+	for (i = 0; i <= current_max_segment; ++i){
+		for (j = 0;j < ADDR_RANGE; ++j){
 			/*in the following lines a key in bucket will only be reallocated iff the new 
 			*segment_mask gives it another segment(row) than those that were previously available
 			*/
@@ -308,9 +294,11 @@ void resize()
 					allocated_bucket_id = hash & bucket_mask ;
 					segment = hash & segment_mask;
 					if (allocated_bucket_id <= j)
-						(segments_arr[i][allocated_bucket_id]._hop_info) &= (~(1<<(j - allocated_bucket_id)));
+						(segments_arr[i][allocated_bucket_id]._hop_info) &= 
+							(~(1<<(j - allocated_bucket_id)));
 					else
-						(segments_arr[i - 1][allocated_bucket_id]._hop_info) &= (~(1<<(ADDR_RANGE - allocated_bucket_id + j)));	
+						(segments_arr[i - 1][allocated_bucket_id]._hop_info) &= 
+							(~(1<<(ADDR_RANGE - allocated_bucket_id + j)));	
 					_add(&key,&temp);
 				}
 			}
