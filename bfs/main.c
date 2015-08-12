@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define num_nodes 6
 typedef struct struct_list list ;
 typedef struct 
@@ -67,12 +67,11 @@ int main(int argc, char const *argv[])
 		}
 		ch=fgetc(fp);
 	}
-	bfs(&node[1]);//node from where the leveling is to be calculated
+	bfs(&node[0]);//node from where the leveling is to be calculated
 	for ( i = 0; i < num_nodes; ++i)
 	{
 		printf("%d -> %d\n",node[i].id,node[i].level);
 	}
 	fclose(fp);
 	return 0;
-	printf("flag\n");
 }

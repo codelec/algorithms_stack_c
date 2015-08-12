@@ -9,20 +9,20 @@ void remove_node(list1 **head,list1 **tail,vertex *toremove)
 		free(traverse);
 	}
 	if (((*head) == NULL) || ((*head)->next_connection == NULL))
-		{return ;}//no use to execute the following lines if the conditions above are true
+		return ;//no use to execute the following lines if the conditions above are true
 	prev_traverse = (*head);//the current head has already been checked in above while loop
 	traverse = (*head)->next_connection;
 	while(traverse != NULL)//to loop through the rest of the contents of the list to check whether it contains the node of interest or not
 	{
 		if(((traverse->node)->id) == (toremove->id))
 		{
-			((prev_traverse)->next_connection) = (traverse->next_connection);
+			prev_traverse->next_connection = traverse->next_connection;
 			if (traverse->next_connection == NULL)
 			{
 				(*tail) = prev_traverse ;
 			}
 			free(traverse);
-			traverse = ((prev_traverse)->next_connection);
+			traverse = prev_traverse->next_connection;
 			continue;//continues to the next iteration to prevent another unnecessary hop
 		}
 		traverse = (traverse->next_connection);//hop
@@ -59,25 +59,30 @@ void dijkstra(vertex* s,int *shortpath)
 	while(num_nodes_explored < NUM_NODES)
 	{	
 		traverse = min_weight_node->connected_to;//taverse the list consisting of the nodes connected a particular node at present first in the list
-		while((traverse != NULL) && (((traverse->node)->explored) != 1))//traverse the connected_to
+		while(traverse != NULL)//traverse the connected_to
 		{
-			if (flag == 0)
+			if (((traverse->node)->explored) != 1)
 			{
-				tail = (list1*)malloc(sizeof(list1));
-				head = tail;
-				flag = 1;
+				if (flag == 0)
+				{
+					tail = (list1*)malloc(sizeof(list1));
+					head = tail;
+					flag = 1;
+				}
+				else
+				{
+					tail->next_connection = (list1*)malloc(sizeof(list1));
+					tail = tail->next_connection;
+				}
+				tail->parent = min_weight_node;
+				tail->node = traverse->node;//adding the traverse node to the queue
+				tail->weight = traverse->weight;
+				tail->next_connection = NULL;//tail=(tail->next_connection);//tail being set for the next addition to the queue
 			}
-			else
-			{
-				tail->next_connection = (list1*)malloc(sizeof(list1));
-				tail = tail->next_connection;
-			}
-			tail->parent = min_weight_node;
-			tail->node = traverse->node;//adding the traverse node to the queue
-			tail->weight = traverse->weight;
-			tail->next_connection = NULL;//tail=(tail->next_connection);//tail being set for the next addition to the queue
 			traverse = traverse->next_connection;
 		}
+		if(head == NULL)//head == NULL implies list is empty
+			return ;
 		min_weight_node = find_min_weight_node(head,shortpath,&num_nodes_explored);
 		/*
 		tail is being passed to make sure that tail 
