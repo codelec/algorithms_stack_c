@@ -11,51 +11,34 @@ typedef struct
 	node *first;
 	node *top;
 }head;
-void stack_push(head *h1)
+void stack_push(head *h1, void *to_add)
 {
-	int data;
-	scanf(" %d",&data);
 	if (h1->first == NULL)
 	{
-		h1 -> first = (node*)malloc(sizeof(node));
-		h1 -> first -> data = data ;
+		h1 -> first = to_add;
 		h1 -> top = h1 -> first ;
 		h1 -> first -> next = NULL;
-		printf(" enter stack_push\n");
 		return ;
 	}
-	h1 -> top -> next = (node*)malloc(sizeof(node));
-	h1 -> top -> next -> data = data;
+	h1 -> top -> next = to_add;
 	h1 -> top -> next -> next = NULL;
 	h1 -> top = h1 -> top -> next;
 }
-void stack_pop(head *h1)
+void* stack_pop(head *h1)
 {
+	node *temp;
 	if (h1 -> top != h1 -> first)
 	{
 		node *traverse = h1 -> first;
 		while(traverse -> next != h1 -> top)
-		{
 			traverse = traverse -> next ;
-		}
-		printf(" %d\n",h1 -> top-> data);
-		free(h1->top);
+		temp = h1 -> top;
 		h1 -> top = traverse;
-		traverse -> next =  NULL;		
+		traverse -> next =  NULL;
+		return temp;	
 	}
-	else if (h1 -> first == NULL)
-	{
-		printf("the stack is empty\n");
-		return ;
-	}
-	else
-	{
-		printf("%d\n", h1 -> first -> data);
-		free(h1 -> first);
-		//free(h1 -> top);
-		h1 -> first = NULL ;
-		h1 -> top = NULL ;
-	}
+	else 
+		return NULL;
 }
 int main(int argc, char const *argv[])
 {
@@ -63,15 +46,22 @@ int main(int argc, char const *argv[])
 	head_node->num_nodes=0;
 	head_node->first=NULL;
 	char ch=getchar();
+	int data;
+	node *temp;
 	while(ch!='q')
 	{
 		switch(ch)
 		{
 			case 'p':
-				stack_push(head_node);
+				scanf(" %d",&data);
+				temp = malloc(sizeof(node));
+				temp -> data = data;
+				stack_push(head_node,temp);
 				break;
 			case 'o':
-				stack_pop(head_node);
+				temp = stack_pop(head_node);
+				printf("%d\n",((node *)temp) -> data);
+				free(temp);
 				break;
 			default :
 				printf("wrong input\n");
