@@ -37,13 +37,18 @@ void* stack_pop(head *h1)
 		traverse -> next =  NULL;
 		return temp;	
 	}
+	else if(h1 -> top == h1 -> first){
+		temp = h1 -> top ;
+		h1 -> top = NULL;
+		h1 -> first = NULL;
+		return temp;
+	}
 	else 
 		return NULL;
 }
 int main(int argc, char const *argv[])
 {
 	head* head_node=(head*)malloc(sizeof(head));
-	head_node->num_nodes=0;
 	head_node->first=NULL;
 	char ch=getchar();
 	int data;
@@ -60,7 +65,9 @@ int main(int argc, char const *argv[])
 				break;
 			case 'o':
 				temp = stack_pop(head_node);
-				printf("%d\n",((node *)temp) -> data);
+				if (temp != NULL)
+					printf("%d\n",((node *)temp) -> data);
+				else printf("stack empty\n");
 				free(temp);
 				break;
 			default :
